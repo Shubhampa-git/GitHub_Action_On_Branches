@@ -1,0 +1,71 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - 'feature/*'  # Triggers on any feature branches
+
+jobs:
+  # Job for main branch: Deploy to production
+  deploy-prod:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Set up Node.js (or your project environment)
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Replace with your desired Node version or project environment
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Deploy to production
+        run: |
+          echo "Deploying to Production Server"
+          # Add your deployment script here, e.g., AWS CLI or other deployment commands
+          # Example: aws deploy --region us-east-1 --application-name my-app
+
+  # Job for dev branch: Deploy to development environment
+  deploy-dev:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Set up Node.js (or your project environment)
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Replace with your desired Node version or project environment
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Deploy to development environment
+        run: |
+          echo "Deploying to Development Server"
+          # Add your dev environment deployment script here
+
+  # Job for feature branches: Only build, no deploy
+  build-feature:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/heads/feature/')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js (or your project environment)
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Replace with your desired Node version or project environment
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build  # Replace with your build command
